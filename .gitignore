@@ -1,2 +1,3 @@
 # ignore all files in the vendor/ directory
 vendor/
+views/templates_c/

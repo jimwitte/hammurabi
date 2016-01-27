@@ -193,11 +193,4 @@ class Game {
 	
 }
 
-
-
-$game = new Game();
-var_dump($game);
-
-
-
 ?>
