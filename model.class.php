@@ -46,7 +46,7 @@ class Game {
     function __construct() {
     
     	session_start();
-    	// session_unset(); // clear out session
+    	//session_unset(); // clear out session
     	
     	// create a new turn for the game
         $this->turn = new Turn();
@@ -124,12 +124,12 @@ class Game {
 		
 		//15% chance of plague, kills half the population that didn't starve first
 		if (rand(1, 20) < 4) {
-			$plagueDeaths = intval(($this->population - $turn->peopleStarved) / 2);
+			$turn->plagueDeaths = intval(($this->population - $turn->peopleStarved) / 2);
         } else {
-        	$plagueDeaths = 0;
+        	$turn->plagueDeaths = 0;
         }
 		
-		$totalDeaths = $plagueDeaths + $turn->peopleStarved;
+		$totalDeaths = $turn->plagueDeaths + $turn->peopleStarved;
 		
 		//chance of immigration if nobody died
 		if ($totalDeaths < 1 ) {
