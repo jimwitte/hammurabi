@@ -4,10 +4,6 @@
 //======================================================================
 
 
-require __DIR__ . '/vendor/autoload.php';
-require __DIR__ . '/model.class.php';
-
-
 class Renderer {
 	public $template;
 	public $viewName = 'start';
@@ -40,9 +36,5 @@ class Renderer {
 
 
 
-$game = new Game();
-$render = new Renderer();
-$render->assignGameToTemplate($game);
-$render->displayWithTemplate('index.tpl');
 
 ?>

@@ -25,10 +25,10 @@ class Turn {
 	
 	function __construct() {
 		// get player inputs from form if available
-		$this->acresBought = 100;
-		$this->acresSold = 0;
-		$this->grainFed = 4000;
-		$this->acresPlanted = 400;
+		$this->acresBought = intval(filter_input(INPUT_POST, 'acresBought', FILTER_VALIDATE_INT));
+		$this->acresSold = intval(filter_input(INPUT_POST, 'acresSold', FILTER_VALIDATE_INT));
+        $this->grainFed = abs(intval(filter_input(INPUT_POST, 'grainFed', FILTER_VALIDATE_INT)));
+        $this->acresPlanted = abs(intval(filter_input(INPUT_POST, 'acresPlanted', FILTER_VALIDATE_INT)));
 	}
 	
 }
@@ -46,7 +46,9 @@ class Game {
     function __construct() {
     
     	session_start();
-    	//session_unset(); // clear out session
+    	if (filter_input(INPUT_POST, 'submit', FILTER_SANITIZE_STRING) == 'reset') {
+    		session_unset(); // clear out session
+    	}
     	
     	// create a new turn for the game
         $this->turn = new Turn();
@@ -72,7 +74,7 @@ class Game {
         	$this->landValue = 19;
         	$this->acresOwned = 1000;
         	$this->population = 100;
-        	$this->grainStored = 2000;
+        	$this->grainStored = 2800;
         	$this->totalStarved = 0;
         	// do not advance game turn, we are starting a new game
         	$this->writeGameState(); // write starting values to game state	 
@@ -88,72 +90,78 @@ class Game {
 		$this->$field = $value;
 	}
 	
-	function validateTurn($turn) {
+	function validateTurn($thisTurn) {
 		$errors = [];
-		if ($turn->acresSold < 0 or $turn->acresBought < 0 or $turn->grainFed < 0 or $turn->acresPlanted < 0) {$errors[]="Values must be greater than 0.";}
+		if ($thisTurn->acresSold < 0 or $thisTurn->acresBought < 0 or $thisTurn->grainFed < 0 or $thisTurn->acresPlanted < 0) {$errors[]="Values must be greater than 0.";}
 		
-		$landSaleProceeds = intval($turn->acresSold * $this->landValue);
-		$landPurchaseCost = intval($turn->acresBought * $this->landValue);
-		$bushelsPlanted = intval($turn->acresPlanted * 2);
-		$totalBushelsUsed = intval($bushelsPlanted + $landPurchaseCost + $turn->grainFed - $landSaleProceeds);
+		$landSaleProceeds = intval($thisTurn->acresSold * $this->landValue);
+		$landPurchaseCost = intval($thisTurn->acresBought * $this->landValue);
+		$bushelsPlanted = intval($thisTurn->acresPlanted * 2);
+		$totalBushelsUsed = intval($bushelsPlanted + $landPurchaseCost + $thisTurn->grainFed - $landSaleProceeds);
+		
 		if ($totalBushelsUsed > $this->grainStored) {$errors[]="O Great One, you don't have enough grain! Your edict requires $totalBushelsUsed bushels.";}
-		if ($turn->acresSold > $this->acresOwned){$errors[]="O Great One, I am unable to sell as you request. You have $this->acresOwned acres to sell.";}		
-		$peopleRequired = intval($turn->acresPlanted * 10);
-		if ($peopleRequired >  $this->population) {$errors[]="O Great One, not enough people to plant as you request. $peopleRequired people are needed to plant $turn->acresPlanted acres.";}
-		$turn->errors = $errors;
+		if ($thisTurn->acresSold > $this->acresOwned){$errors[]="O Great One, I am unable to sell as you request. You have $this->acresOwned acres to sell.";}		
+		
+		$peopleRequired = intval($thisTurn->acresPlanted / 10);
+		if ($peopleRequired >  $this->population) {$errors[]="O Great One, not enough people to plant as you request. $peopleRequired people are needed to plant $thisTurn->acresPlanted acres.";}
+		return $errors;
 	}
 	
 	function advanceTurn($turn) {
 		//validate game turn inputs
 		$turn->errors = $this->validateTurn($turn);
-	
-		// harvest is 1-6 bushels per acre
-		$turn->harvest = intval($turn->acresPlanted * rand(1,6)); 
-		
-		// 50/50 chance of losing 10%-14% of stored grain
-		$turn->ratLoss = intval(rand(0,1) * $this->grainStored / rand(7,10)); 
-		
-		// 20 bushels required to feed each person. Can't feed more people than current population
-		$peopleFed = intval(min(($turn->grainFed / 20),$this->population));
-		$turn->peopleStarved = intval($this->population - $peopleFed);
 
-		$landPurchaseCost = intval($turn->acresBought * $this->landValue);
-		$landSaleProceeds = intval($turn->acresSold * $this->landValue);
-		$bushelsPlanted = intval($turn->acresPlanted * 2);
-		$totalBushelsUsed = intval($bushelsPlanted + $landPurchaseCost + $turn->grainFed - $landSaleProceeds);
+		if (!empty($turn->errors)) {
+		} else {
 		
-		//15% chance of plague, kills half the population that didn't starve first
-		if (rand(1, 20) < 4) {
-			$turn->plagueDeaths = intval(($this->population - $turn->peopleStarved) / 2);
-        } else {
-        	$turn->plagueDeaths = 0;
-        }
+			// harvest is 1-6 bushels per acre
+			$turn->harvest = intval($turn->acresPlanted * rand(1,6)); 
 		
-		$totalDeaths = $turn->plagueDeaths + $turn->peopleStarved;
+			// 50/50 chance of losing 10%-14% of stored grain
+			$turn->ratLoss = intval(rand(0,1) * $this->grainStored / rand(7,10)); 
 		
-		//chance of immigration if nobody died
-		if ($totalDeaths < 1 ) {
-            $immigration = intval((20 * $this->acresOwned + $this->grainStored) / (100 * $this->population) + 1);
-        } else {
-            $immigration = 0;
-        }
-        
-        //impeachment if more than 45% of the people starve in a single Turn
-        if ($turn->peopleStarved > .45 * $this->population) {
-        	$impeach = TRUE;
-        } else {
-        	$impeach = FALSE;
-        }
-        
-        // update game state 
-		$this->population = intval($this->population - $totalDeaths + $immigration);
-		$this->grainStored = intval($this->grainStored - $totalBushelsUsed - $turn->ratLoss + $turn->harvest);
-		// $this->year++; //increment by 1
-		$this->landValue = rand(15, 25);
-		$this->acresOwned = $this->acresOwned + $turn->acresBought - $turn->acresSold;
-		$this->totalStarved = $this->totalStarved + $turn->peopleStarved;
+			// 20 bushels required to feed each person. Can't feed more people than current population
+			$peopleFed = intval(min(($turn->grainFed / 20),$this->population));
+			$turn->peopleStarved = intval($this->population - $peopleFed);
+
+			$landPurchaseCost = intval($turn->acresBought * $this->landValue);
+			$landSaleProceeds = intval($turn->acresSold * $this->landValue);
+			$bushelsPlanted = intval($turn->acresPlanted * 2);
+			$totalBushelsUsed = intval($bushelsPlanted + $landPurchaseCost + $turn->grainFed - $landSaleProceeds);
 		
-		$this->writeGameState(); // write game state to session
+			//15% chance of plague, kills half the population that didn't starve first
+			if (rand(1, 20) < 4) {
+				$turn->plagueDeaths = intval(($this->population - $turn->peopleStarved) / 2);
+			} else {
+				$turn->plagueDeaths = 0;
+			}
+		
+			$totalDeaths = $turn->plagueDeaths + $turn->peopleStarved;
+		
+			//chance of immigration if nobody died
+			if ($totalDeaths < 1 ) {
+				$turn->immigration = intval((20 * $this->acresOwned + $this->grainStored) / (100 * $this->population) + 1);
+			} else {
+				$turn->immigration = 0;
+			}
+		
+			//impeachment if more than 45% of the people starve in a single Turn
+			if ($turn->peopleStarved > .45 * $this->population) {
+				$impeach = TRUE;
+			} else {
+				$impeach = FALSE;
+			}
+		
+			// update game state 
+			$this->population = intval($this->population - $totalDeaths + $turn->immigration);
+			$this->grainStored = intval($this->grainStored - $totalBushelsUsed - $turn->ratLoss + $turn->harvest);
+			$this->year++; //advance year by 1
+			$this->landValue = rand(15, 25);
+			$this->acresOwned = $this->acresOwned + $turn->acresBought - $turn->acresSold;
+			$this->totalStarved = $this->totalStarved + $turn->peopleStarved;
+		
+			$this->writeGameState(); // write game state to session
+		}
 	}
 	
 	function gameOver() {
