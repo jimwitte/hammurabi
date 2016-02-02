@@ -177,28 +177,7 @@ class Game {
 		$_SESSION['grainStored'] = $this->grainStored;
 		$_SESSION['totalStarved'] = $this->totalStarved;
 	}
-	
-	
-	function statusReport($events) {
-		$status = "You are in year ".$this->year." of your 10 year reign. ";
-		$status .= "You have ".$this->acresOwned." acres. ";
-		$status .= "Population is ".$this->population." people. ";
-		$status .= "You have  $this->grainStored bushels in storage. ";
-		$status .= "Land is trading at ".$this->landValue." bushels/acre. ";
-		$status .= "Last year you harvested ".$events['harvest']." bushels. ";
-		if ($events['ratLoss'] > 0 ) {
-			$status .= "Rats ate ".$events['ratLoss']." bushels. ";
-		}
-		if ($events['peopleStarved'] > 0) {
-			$status .= $events['peopleStarved']." people starved. ";
-		}
-		if ($events['impeach']) {
-			$status .= "You have been impeached and thrown out of office!";
-		}
 		
-		return $status;
-	}
-	
 }
 
 ?>
