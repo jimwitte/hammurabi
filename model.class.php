@@ -147,7 +147,7 @@ class Game {
         
         // update game state 
 		$this->population = intval($this->population - $totalDeaths + $immigration);
-		$this->grainStored = intval($this->grainStored - $totalBushelsUsed - $turn->ratLoss);
+		$this->grainStored = intval($this->grainStored - $totalBushelsUsed - $turn->ratLoss + $turn->harvest);
 		// $this->year++; //increment by 1
 		$this->landValue = rand(15, 25);
 		$this->acresOwned = $this->acresOwned + $turn->acresBought - $turn->acresSold;

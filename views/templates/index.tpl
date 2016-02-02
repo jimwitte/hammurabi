@@ -12,6 +12,14 @@
 		{if !empty($game->turn->plagueDeaths)}<li>A horrible plague struck! {$game->turn->plagueDeaths} people became sick and died.</li>{/if}
 		<li>Population is now {$game->population}</li>
 	</ul>
+	
+	<ul>
+		<li>You harvested {$game->turn->harvest} bushels last year. The rats ate {$game->turn->ratLoss} bushels.</li>
+		<li>You now have {$game->grainStored} bushels in store.</li>
+		<li>Land is trading at {$game->landValue} bushels per acre.</li>
+	
+	
+	</ul>
 
    
 </div>
