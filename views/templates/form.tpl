@@ -2,7 +2,7 @@
             <div class="form-group">
                 <label class="col-sm-4" for="acresBought">How many acres do you with to buy?</label>
                 <div class="col-sm-2">
-                    <input class="form-control" type="number" name="acresBought" id="acresBought" value="0">
+                    <input class="form-control" type="number" name="acresBought" id="acresBought" value="{if !empty($game->turn->errors)}{$game->turn->acresBought}{else}0{/if}">
                 </div>
                 <p class="help-block container">Land is wealth and power. Great leaders expand their empire.</p>
             </div>
@@ -10,7 +10,7 @@
             <div class="form-group">
                 <label class="col-sm-4" for="acresSold">How many acres do you with to sell?</label>
                 <div class="col-sm-2">
-                    <input class="form-control" type="number" name="acresSold" id="acresSold" value="0">
+                    <input class="form-control" type="number" name="acresSold" id="acresSold" value="{if !empty($game->turn->errors)}{$game->turn->acresSold}{else}0{/if}">
                 </div>
                 <p class="help-block container">Sell land when you are short on grain.</p>
             </div>
@@ -26,7 +26,7 @@
             <div class="form-group">
                 <label class="col-sm-4" for="acresPlanted">How many acres do you wish to plant with seed?</label>
                 <div class="col-sm-2">
-                    <input class="form-control" type="number" name="acresPlanted" id="acresPlanted">
+                    <input class="form-control" type="number" name="acresPlanted" id="acresPlanted" value="{if !empty($game->turn->errors)}{$game->turn->acresPlanted}{else}0{/if}">
                 </div>
                 <p class="help-block container">2 bushels are needed to plant 1 acre. A person can work at most 10 acres. 
                 {$game->population} people can plant <strong>{$game->population * 10}</strong> acres.

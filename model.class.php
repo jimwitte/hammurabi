@@ -4,15 +4,6 @@
 // MODEL objects
 //======================================================================
 
-class LandTransaction {
-	public $acresBought = 0;
-	public $acresSold = 0;
-	public $landValue = 0;
-	
-	function netBushels() {
-		return ($this->acresSold * $this->landValue) - ($this->acresBought * $this->landValue);
-	}
-}
 
 class Turn {
 	//player inputs
@@ -27,6 +18,7 @@ class Turn {
 	//turn events
 	public $impeach = FALSE;
 	public $harvest = 0;
+	public $yield =0;
 	public $ratLoss = 0;
 	public $peopleStarved = 0;
 	public $plagueDeaths = 0;
@@ -115,6 +107,8 @@ class Game {
 		
 		// only unplanted acres are available for sale
 		$acresAvailableForSale = $this->acresOwned - $thisTurn->acresPlanted + $thisTurn->acresBought;
+		if ($acresAvailableForSale < 0) {$acresAvailableForSale = 0;}
+
 		if ($thisTurn->acresSold > $acresAvailableForSale){$errors[]="O Great One, I am unable to sell as you request. Only unplanted acres can be sold. You have $acresAvailableForSale acres available to sell.";}	
 		
 		// check that enough people are available to plant
@@ -131,7 +125,8 @@ class Game {
 		} else {
 		
 			// harvest is 1-6 bushels per acre
-			$turn->harvest = intval($turn->acresPlanted * rand(1,6)); 
+			$turn->yield = rand(1,6);
+			$turn->harvest = intval($turn->acresPlanted * $turn->yield); 
 		
 			// 50/50 chance of losing 10%-14% of stored grain
 			$turn->ratLoss = intval(rand(0,1) * $this->grainStored / rand(7,10)); 
@@ -172,7 +167,7 @@ class Game {
 			$this->population = intval($this->population - $totalDeaths + $turn->immigration);
 			$this->grainStored = intval($this->grainStored - $totalBushelsUsed - $turn->ratLoss + $turn->harvest);
 			$this->year++; //advance year by 1
-			$this->landValue = rand(15, 25);
+			$this->landValue = rand(17, 26);
 			$this->acresOwned = $this->acresOwned + $turn->acresBought - $turn->acresSold;
 			$this->totalStarved = $this->totalStarved + $turn->peopleStarved;
 		

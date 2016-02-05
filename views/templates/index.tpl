@@ -4,7 +4,7 @@
 	<p>Try your hand at governing ancient Sumeria for a ten-year term of office.</p>
 {/if}
 
-<div class="well well-sm {if $view neq 'start' AND empty($game->turn->errors)}animated rotateIn{/if} {if !empty($game->turn->errors)}animated shake{/if}">
+<div class="well well-sm {if $view neq 'start' AND empty($game->turn->errors)}animated rollIn{/if} {if !empty($game->turn->errors)}animated shake{/if}">
 
 	{if !empty($game->turn->errors)}
 		<div class="alert alert-danger" role="alert">
@@ -24,7 +24,8 @@
 	</p>
 	
 	<p>
-		You harvested {$game->turn->harvest} bushels last year. The rats ate {$game->turn->ratLoss} bushels.<br />
+		Last year you harvested {$game->turn->yield} bushels/acre for a total of {$game->turn->harvest} bushels.<br />
+		The rats ate {$game->turn->ratLoss} bushels.<br />
 		You now have {$game->grainStored} bushels in store.<br />
 	</p>
 	<p>
