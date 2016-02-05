@@ -4,13 +4,17 @@
 	<p>Try your hand at governing ancient Sumeria for a ten-year term of office.</p>
 {/if}
 
-<div class="well well-sm {if $view neq 'start'}animated rotateIn{/if}">
+<div class="well well-sm {if $view neq 'start' AND empty($game->turn->errors)}animated rotateIn{/if} {if !empty($game->turn->errors)}animated shake{/if}">
 
-	{foreach from=$game->turn->errors item=thisError}
-    	<div class="alert alert-danger" role="alert">{$thisError}</div>
-	{/foreach}
+	{if !empty($game->turn->errors)}
+		<div class="alert alert-danger" role="alert">
+			{foreach from=$game->turn->errors item=thisError}
+    			<p>{$thisError}</p>
+			{/foreach}
+		</div>
+	{/if}
 
-	<p>Hammurabi: I beg to report to you, in year {$game->year} of your glorious reign:
+	<p>Hammurabi: I beg to report to you, in <strong>Year {$game->year}</strong> of your glorious reign:
 
 	<p>
 		{$game->turn->peopleStarved} people starved. <br />
@@ -22,7 +26,8 @@
 	<p>
 		You harvested {$game->turn->harvest} bushels last year. The rats ate {$game->turn->ratLoss} bushels.<br />
 		You now have {$game->grainStored} bushels in store.<br />
-		
+	</p>
+	<p>
 		{if !empty($game->turn->acresSold)}You sold {$game->turn->acresSold} acres last year.<br />{/if}
 		{if !empty($game->turn->acresBought)}You bought {$game->turn->acresBought} acres last year.<br />{/if}
 		You own {$game->acresOwned} acres.<br />
