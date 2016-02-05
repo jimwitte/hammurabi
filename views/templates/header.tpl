@@ -5,6 +5,7 @@
         <title>Hammurabi: The Game</title>
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="animate.css" rel="stylesheet">
         <link href="hammurabi.css" rel="stylesheet">
     </head>
     <body>

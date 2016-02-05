@@ -4,7 +4,7 @@
 	<p>Try your hand at governing ancient Sumeria for a ten-year term of office.</p>
 {/if}
 
-<div class="well well-sm">
+<div class="well well-sm {if $view neq 'start'}animated rotateIn{/if}">
 
 	{foreach from=$game->turn->errors item=thisError}
     	<div class="alert alert-danger" role="alert">{$thisError}</div>
