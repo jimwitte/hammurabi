@@ -4,6 +4,15 @@
 // MODEL objects
 //======================================================================
 
+class LandTransaction {
+	public $acresBought = 0;
+	public $acresSold = 0;
+	public $landValue = 0;
+	
+	function netBushels() {
+		return ($this->acresSold * $this->landValue) - ($this->acresBought * $this->landValue);
+	}
+}
 
 class Turn {
 	//player inputs
@@ -92,16 +101,23 @@ class Game {
 	
 	function validateTurn($thisTurn) {
 		$errors = [];
+		// check > 0
 		if ($thisTurn->acresSold < 0 or $thisTurn->acresBought < 0 or $thisTurn->grainFed < 0 or $thisTurn->acresPlanted < 0) {$errors[]="Values must be greater than 0.";}
 		
 		$landSaleProceeds = intval($thisTurn->acresSold * $this->landValue);
 		$landPurchaseCost = intval($thisTurn->acresBought * $this->landValue);
 		$bushelsPlanted = intval($thisTurn->acresPlanted * 2);
 		$totalBushelsUsed = intval($bushelsPlanted + $landPurchaseCost + $thisTurn->grainFed - $landSaleProceeds);
+		$shortfall = $totalBushelsUsed - $this->grainStored;
 		
-		if ($totalBushelsUsed > $this->grainStored) {$errors[]="O Great One, you don't have enough grain! Your edict requires $totalBushelsUsed bushels.";}
-		if ($thisTurn->acresSold > $this->acresOwned){$errors[]="O Great One, I am unable to sell as you request. You have $this->acresOwned acres to sell.";}		
+		// can't use more bushels than available
+		if ($shortfall > 0) {$errors[]="O Great One, your edict requires $shortfall additonal bushels. You have $this->grainStored in storage. You ordered $bushelsPlanted used to plant, $landPurchaseCost to buy land, $landSaleProceeds gained from selling land, $thisTurn->grainFed used for feeding people.";}
 		
+		// only unplanted acres are available for sale
+		$acresAvailableForSale = $this->acresOwned - $thisTurn->acresPlanted + $thisTurn->acresBought;
+		if ($thisTurn->acresSold > $acresAvailableForSale){$errors[]="O Great One, I am unable to sell as you request. Only unplanted acres can be sold. You have $acresAvailableForSale acres available to sell.";}	
+		
+		// check that enough people are available to plant
 		$peopleRequired = intval($thisTurn->acresPlanted / 10);
 		if ($peopleRequired >  $this->population) {$errors[]="O Great One, not enough people to plant as you request. $peopleRequired people are needed to plant $thisTurn->acresPlanted acres.";}
 		return $errors;
