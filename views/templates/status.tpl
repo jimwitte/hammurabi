@@ -4,8 +4,7 @@
 		Population is now {$game->population} people.
 	</p>
 	<p>
-		Last year you harvested {$game->turn->yield} bushels/acre for a total of {$game->turn->harvest} bushels.<br />
-		The rats ate {$game->turn->ratLoss} bushels.<br />
+		Last year you harvested {$game->turn->yield} bushels/acre for a total of {$game->turn->harvest} bushels. The rats ate {$game->turn->ratLoss} bushels.<br />
 		You now have {$game->grainStored} bushels in store.<br />
 	</p>
 	<p>

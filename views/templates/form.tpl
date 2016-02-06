@@ -33,6 +33,5 @@
                 </p>
             </div>            
             <button type="submit" name="submit" id="next" value="next" class="btn btn-success" style="margin-bottom: 2em;">So let it be written, so let it be done!</button>
-            <button type="submit" name="submit" id="reset" value="reset" class="btn" style="margin-bottom: 2em;">Reset</button>
 
 </form>

@@ -11,7 +11,5 @@
 	<p>So long for now.</p>
 
 </div>
-   
-{include 'form.tpl'}
 
 {include 'footer.tpl'}

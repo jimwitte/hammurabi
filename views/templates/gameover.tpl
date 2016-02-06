@@ -24,6 +24,4 @@
 
 </div>
 
-{include 'form.tpl'}
-
 {include 'footer.tpl'}

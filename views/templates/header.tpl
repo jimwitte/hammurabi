@@ -13,5 +13,5 @@
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
         <div class="container">
-            <h1>Hammurabi: The Game</h1>
+            <h1>Hammurabi <small>The Game</small></h1>
             <p>Inspired by the BASIC game, <a href="http://en.wikipedia.org/wiki/Hamurabi">http://en.wikipedia.org/wiki/Hamurabi</a></p>
