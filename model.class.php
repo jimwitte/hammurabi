@@ -48,7 +48,8 @@ class Game {
     function __construct() {
     
     	session_start();
-    	if (filter_input(INPUT_POST, 'submit', FILTER_SANITIZE_STRING) == 'reset') {
+    	$submitButton = filter_input(INPUT_POST, 'submit', FILTER_SANITIZE_STRING);
+    	if ($submitButton == 'reset' or $submitButton !== 'next') {
     		session_unset(); // clear out session
     	}
     	
