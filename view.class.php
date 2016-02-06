@@ -22,14 +22,7 @@ class Renderer {
 	}
 	
 	function assignGameToTemplate($game) {
-		$this->template->assign('game', $game);
-		
-		if ($game->year == 1) {
-			$this->viewName = 'start';
-		} else {
-			$this->viewName = 'midgame';
-		}
-		
+		$this->template->assign('game', $game);		
 		$this->template->assign('view',$this->viewName);
 	}
 	

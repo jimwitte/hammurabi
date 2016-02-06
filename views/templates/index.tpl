@@ -4,7 +4,7 @@
 	<p>Try your hand at governing ancient Sumeria for a ten-year term of office.</p>
 {/if}
 
-<div class="well well-sm {if $view neq 'start' AND empty($game->turn->errors)}animated rollIn{/if} {if !empty($game->turn->errors)}animated shake{/if}">
+<div class="well well-sm {if $view eq 'midgame'}animated rollIn{/if}{if $view eq 'error'}animated shake{/if}">
 
 	{if !empty($game->turn->errors)}
 		<div class="alert alert-danger" role="alert">
@@ -22,7 +22,6 @@
 		{if !empty($game->turn->plagueDeaths)}A horrible plague struck! {$game->turn->plagueDeaths} people became sick and died.<br />{/if}
 		Population is now {$game->population} people.
 	</p>
-	
 	<p>
 		Last year you harvested {$game->turn->yield} bushels/acre for a total of {$game->turn->harvest} bushels.<br />
 		The rats ate {$game->turn->ratLoss} bushels.<br />
