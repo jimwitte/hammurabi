@@ -14,7 +14,7 @@
 		</div>
 	{/if}
 
-	<p>Hammurabi: I beg to report to you, in <strong>Year {$game->year}</strong> of your glorious reign:
+	<p class="lead">Hammurabi: I beg to report to you, in <strong>Year {$game->year}</strong> of your glorious reign:
 
 	{include 'status.tpl'}
 	
