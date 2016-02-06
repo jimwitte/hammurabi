@@ -14,7 +14,8 @@
 		{$game->totalStarved|round:"2"} people died.
 		</p>
 	
-		<p>You started with 10 acres per person and ended with {($game->acresOwned / $game->population)|round:"1"} acres per person.
+		<p>You started with 10 acres per person and ended with 
+		{($game->acresOwned / $game->population)|round:"1"} acres per person.
 		</p>
 		<p><strong>{$game->perfeval()}</strong></p>
 	

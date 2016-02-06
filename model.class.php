@@ -71,7 +71,7 @@ class Game {
         	
         } else {
         	// default values for new game 
-            $this->year = 10;
+            $this->year = 1;
         	$this->landValue = 19;
         	$this->acresOwned = 1000;
         	$this->population = 100;
