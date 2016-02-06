@@ -1,6 +1,6 @@
 <form action="index.php" method="post" class="form-horizontal" role="form">
             <div class="form-group">
-                <label class="col-sm-4" for="acresBought">How many acres do you with to buy?</label>
+                <label class="col-sm-4" for="acresBought">How many acres do you wish to buy?</label>
                 <div class="col-sm-2">
                     <input class="form-control" type="number" name="acresBought" id="acresBought" value="{if $view eq 'error'}{$game->turn->acresBought}{else}0{/if}">
                 </div>
@@ -8,7 +8,7 @@
             </div>
             
             <div class="form-group">
-                <label class="col-sm-4" for="acresSold">How many acres do you with to sell?</label>
+                <label class="col-sm-4" for="acresSold">How many acres do you wish to sell?</label>
                 <div class="col-sm-2">
                     <input class="form-control" type="number" name="acresSold" id="acresSold" value="{if $view eq 'error'}{$game->turn->acresSold}{else}0{/if}">
                 </div>

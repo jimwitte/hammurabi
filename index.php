@@ -9,21 +9,27 @@ require __DIR__ . '/view.class.php';
 
 $game = new Game();
 $render = new Renderer();
+$templateName = 'index.tpl';
 
 // choose view
 if (!empty($game->turn->errors)) {
-	$render->viewName = 'error';
+	$view = 'error';
 } elseif ($game->year == 1) {
-	$render->viewName = 'start';
+	$view = 'start';
 } elseif ($game->year > 10) {
-	$render->viewName = 'end';
+	$view = 'gameover';
+	$templateName = 'gameover.tpl';
+} elseif ($game->turn->impeach) {
+	$view = 'impeach';
+	$templateName = 'impeach.tpl';
 } else {
-	$render->viewName ='midgame';
+	$view = 'midgame';
 }
 
 
+$render->setView($view);
 $render->assignGameToTemplate($game);
-$render->displayWithTemplate('index.tpl');
+$render->displayWithTemplate($templateName);
 
 
 ?>

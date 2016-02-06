@@ -41,6 +41,7 @@ class Game {
     public $population = 0;
     public $grainStored = 0;
     public $totalStarved = 0;
+    public $totalPercentStarved = 0;
     
     public $turn;
 
@@ -62,21 +63,21 @@ class Game {
         	$this->population = $_SESSION['population'];
         	$this->grainStored = $_SESSION['grainStored'];
         	$this->totalStarved = $_SESSION['totalStarved'];
+        	$this->totalPercentStarved = $_SESSION['totalPercentStarved'] ;
 
-			if ($this->year <= 10) {
+			if ($this->year < 11) {
         		$this->advanceTurn($this->turn); // game in progress, advance turn
-        	} else {
-        		$this->gameOver();
         	}
         	
         } else {
         	// default values for new game 
-            $this->year = 1;
+            $this->year = 10;
         	$this->landValue = 19;
         	$this->acresOwned = 1000;
         	$this->population = 100;
         	$this->grainStored = 2800;
         	$this->totalStarved = 0;
+        	$this->totalPercentStarved = 0;
         	// do not advance game turn, we are starting a new game
         	$this->writeGameState(); // write starting values to game state	 
         }
@@ -158,27 +159,39 @@ class Game {
 		
 			//impeachment if more than 45% of the people starve in a single Turn
 			if ($turn->peopleStarved > .45 * $this->population) {
-				$impeach = TRUE;
+				$turn->impeach = TRUE;
 			} else {
-				$impeach = FALSE;
+				$turn->impeach = FALSE;
 			}
-		
+			
+				
 			// update game state 
+			$this->totalStarved = $this->totalStarved + $turn->peopleStarved;
+			$this->totalPercentStarved = ((($this->year - 1) * $this->totalPercentStarved) + ($turn->peopleStarved * 100/$this->population))/$this->year;
 			$this->population = intval($this->population - $totalDeaths + $turn->immigration);
 			$this->grainStored = intval($this->grainStored - $totalBushelsUsed - $turn->ratLoss + $turn->harvest);
 			$this->year++; //advance year by 1
 			$this->landValue = rand(17, 26);
 			$this->acresOwned = $this->acresOwned + $turn->acresBought - $turn->acresSold;
-			$this->totalStarved = $this->totalStarved + $turn->peopleStarved;
-		
 			$this->writeGameState(); // write game state to session
 		}
 	}
+
 	
-	function gameOver() {
-		echo "game over!";
+	function perfEval() {
+		$eval = '';
+		$acresPerPerson = $this->acresOwned / $this->population;
+		if ($this->totalPercentStarved > 33 OR $acresPerPerson < 7) {
+			$eval = "Due to this extreme mismanagement you have not only been impeached and thrown out of office but you have also been declared National Fink!";
+		} elseif ($this->totalPercentStarved > 10 OR $acresPerPerson < 9) {
+			$eval = "Your heavy-handed performance smacks of Nero and Ivan IV. The people (remaining) find you an unpleasant ruler, and, frankly, hate your guts!";
+		} elseif ($this->totalPercentStarved > 3 OR $acresPerPerson < 10) {
+			$eval = "Your performance could have been somewhat better, but really wasn't too bad at all. ".rand(1,intval($this->population * .8))." people would dearly like to see you assassinated but we all have our trivial problems.";
+		} else {
+			$eval = "A fantastic performance! Charlemange, Disraeli, and Jefferson combined could not have done better!";
+		}
+		return $eval;
 	}
-	
 	
 	function writeGameState() {
 		$_SESSION['year'] = $this->year;
@@ -187,6 +200,7 @@ class Game {
 		$_SESSION['population'] = $this->population;
 		$_SESSION['grainStored'] = $this->grainStored;
 		$_SESSION['totalStarved'] = $this->totalStarved;
+		$_SESSION['totalPercentStarved'] = $this->totalPercentStarved;
 	}
 		
 }
